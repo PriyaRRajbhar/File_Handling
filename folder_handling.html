@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <!-- FOLDER HANDLING
+1. Html section: 
+	i. input file, folder should be selected
+	ii. ol
+test one: input file pickable
+test two: input file button onclick opens file manager for folder selection, submit should show folder name
+test three: on selected folder iterate on it's file, console.log file name
+test four: from selected folder ->  filename, filepath, append to ol -->
+
+    
+        <input type="file" id="folderPicker" webkitdirectory />
+    <ol id="fileList">
+
+    </ol>
+
+    
+</body>
+<script>
+    // 1. Select folder and list files
+    const folderPicker = document.getElementById('folderPicker');
+    const fileList = document.getElementById('fileList');
+
+    folderPicker.addEventListener('change', function(event) {
+        // console.log(event);
+        const files = event.target.files;
+        console.log("Files selected:", files);
+        const limit = files.length;
+        for(let i in files) {
+            if (i < limit-1){
+                console.log(files[i].name, files[i].webkitRelativePath);
+            const file_li = document.createElement('li');
+            file_li.textContent = `File Name: ${files[i].name}, File Path: ${files[i].webkitRelativePath}`;
+            fileList.appendChild(file_li);
+            file_li.innerHTML += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input type='button' value='Delete' onclick='this.parentNode.remove()'>";
+            
+        }
+    }
+    });
+    
+</script>
+</html>

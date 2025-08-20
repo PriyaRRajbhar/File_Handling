@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <!-- 1. how to list html -->
+     <ul>
+        <li> test1</li>
+        <li> test2</li>
+     </ul>
+        <ul id="list2">
+            <li id="toDelete">Pizza</li>
+        </ul>
+     
+</body>
+    <script>
+        // 2. how to add and remove into list of html using js
+        const list2 = document.getElementById('list2');
+        const li1 = document.createElement('li');
+        const li2 = document.createElement('li');
+        li1.textContent = 'test3';
+        li2.textContent = 'test4';
+        list2.appendChild(li1);
+        list2.appendChild(li2);
+
+        const toDelete = document.getElementById('toDelete');
+        toDelete.remove();
+
+        li1.innerHTML += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input type='button' value=Delete onclick='this.parentNode.remove()'>";
+
+    </script>
+</html>
