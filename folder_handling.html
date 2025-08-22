@@ -13,7 +13,7 @@
 test one: input file pickable
 test two: input file button onclick opens file manager for folder selection, submit should show folder name
 test three: on selected folder iterate on it's file, console.log file name
-test four: from selected folder ->  filename, filepath, append to ol -->
+test four: from selected folder ->  filename, filepath, append to ol  -->
 
     
         <input type="file" id="folderPicker" webkitdirectory />
@@ -29,6 +29,7 @@ test four: from selected folder ->  filename, filepath, append to ol -->
     const fileList = document.getElementById('fileList');
 
     folderPicker.addEventListener('change', function(event) {
+        event.preventDefault();
         // console.log(event);
         const files = event.target.files;
         console.log("Files selected:", files);

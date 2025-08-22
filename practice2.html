@@ -1,0 +1,304 @@
+<!-- MEDIA HANDLING
+1. Html section: 
+	i. input file, folder should be selected, only list image video, audio
+	ii. ol with file list and view button
+test one: input type file (webkit directory), submit
+test two: visible list of selected files (image audio video with ) view button
+test three: onclick of view button, show a popup with close
+test four: popup with filename
+test five: popup with image if it is image file-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Folder Handling</title>
+</head>
+<style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .file-input-container {
+            margin-bottom: 20px;
+            padding: 20px;
+            border: 2px dashed #ccc;
+            border-radius: 5px;
+        }
+        
+        .file-list {
+            margin-top: 20px;
+        }
+        
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid #ddd;
+            margin: 5px 0;
+            border-radius: 3px;
+        }
+        
+        .view-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        
+        .view-btn:hover {
+            background: #0056b3;
+        }
+        
+        /* Modal/Popup Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+        }
+        
+        .modal-content {
+            position: relative;
+            margin: 5% auto;
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            max-width: 80%;
+            max-height: 80%;
+            overflow: auto;
+        }
+        
+        .close {
+            position: absolute;
+            right: 15px;
+            top: 15px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #aaa;
+        }
+        
+        .close:hover {
+            color: black;
+        }
+        
+        .media-preview {
+            max-width: 100%;
+            max-height: 500px;
+            margin: 10px 0;
+        }
+        
+        .file-info {
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+    </style>
+<body>
+    <h1>Media File Handler</h1>
+    
+    <!-- Test 1: File Input with Directory Selection -->
+    <div class="file-input-container">
+        <label for="folderInput">Select Folder:</label>
+        <input type="file" id="folderInput" webkitdirectory multiple accept="image/*,video/*,audio/*">
+        <button id="submitBtn" onclick="handleSubmit()">Submit</button>
+    </div>
+    
+    <!-- Test 2: File List Display -->
+    <div class="file-list">
+        <h3>Selected Media Files:</h3>
+        <ol id="fileList"></ol>
+    </div>
+    
+    <!-- Test 3, 4, 5: Modal Popup -->
+    <div id="mediaModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
+</body>
+<script>
+   // Global variables to store selected files
+let selectedFiles = [];
+let currentModal = null;
+
+// Test 1: Handle file input change
+document.getElementById('folderInput').addEventListener('change', function(event) {
+    const files = Array.from(event.target.files);
+    
+    // Filter only media files (images, videos, audio)
+    selectedFiles = files.filter(file => {
+        const fileType = file.type;
+        return fileType.startsWith('image/') || 
+               fileType.startsWith('video/') || 
+               fileType.startsWith('audio/');
+    });
+    
+    console.log(`Found ${selectedFiles.length} media files`);
+    displayFileList();
+});
+
+// Test 1: Submit button handler
+function handleSubmit() {
+    if (selectedFiles.length === 0) {
+        alert('Please select a folder with media files first!');
+        return;
+    }
+    
+    console.log('Submit clicked with files:', selectedFiles.map(f => f.name));
+    alert(`Successfully loaded ${selectedFiles.length} media files`);
+}
+
+// Test 2: Display file list with view buttons
+function displayFileList() {
+    const fileList = document.getElementById('fileList');
+    fileList.innerHTML = ''; // Clear previous list
+    
+    if (selectedFiles.length === 0) {
+        fileList.innerHTML = '<li>No media files selected</li>';
+        return;
+    }
+    
+    selectedFiles.forEach((file, index) => {
+        const listItem = document.createElement('li');
+        listItem.className = 'file-item';
+        
+        const fileName = document.createElement('span');
+        fileName.textContent = `${file.name} (${formatFileSize(file.size)})`;
+        
+        const viewButton = document.createElement('button');
+        viewButton.textContent = 'View';
+        viewButton.className = 'view-btn';
+        viewButton.onclick = () => viewFile(file, index);
+        
+        listItem.appendChild(fileName);
+        listItem.appendChild(viewButton);
+        fileList.appendChild(listItem);
+    });
+}
+
+// Test 3: Show popup/modal
+function showModal() {
+    const modal = document.getElementById('mediaModal');
+    modal.style.display = 'block';
+    currentModal = modal;
+    
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        if (event.target === modal) {
+            closeModal();
+        }
+    }
+}
+
+// Test 3: Close popup/modal
+function closeModal() {
+    const modal = document.getElementById('mediaModal');
+    modal.style.display = 'none';
+    currentModal = null;
+    
+    // Clean up event listener
+    window.onclick = null;
+}
+
+// Test 4 & 5: View file in popup
+function viewFile(file, index) {
+    const modalContent = document.getElementById('modalContent');
+    
+    // Test 4: Display filename
+    const fileInfo = document.createElement('div');
+    fileInfo.className = 'file-info';
+    fileInfo.innerHTML = `
+        <strong>File:</strong> ${file.name}<br>
+        <strong>Size:</strong> ${formatFileSize(file.size)}<br>
+        <strong>Type:</strong> ${file.type}<br>
+        <strong>Last Modified:</strong> ${new Date(file.lastModified).toLocaleString()}
+    `;
+    
+    modalContent.innerHTML = '';
+    modalContent.appendChild(fileInfo);
+    
+    // Test 5: Show media preview based on file type
+    if (file.type.startsWith('image/')) {
+        showImagePreview(file, modalContent);
+    } else if (file.type.startsWith('video/')) {
+        showVideoPreview(file, modalContent);
+    } else if (file.type.startsWith('audio/')) {
+        showAudioPreview(file, modalContent);
+    }
+    
+    showModal();
+}
+
+// Test 5: Image preview
+function showImagePreview(file, container) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const img = document.createElement('img');
+        img.src = e.target.result;
+        img.className = 'media-preview';
+        img.alt = file.name;
+        container.appendChild(img);
+    };
+    reader.readAsDataURL(file);
+}
+
+// Video preview
+function showVideoPreview(file, container) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const video = document.createElement('video');
+        video.src = e.target.result;
+        video.className = 'media-preview';
+        video.controls = true;
+        video.preload = 'metadata';
+        container.appendChild(video);
+    };
+    reader.readAsDataURL(file);
+}
+
+// Audio preview
+function showAudioPreview(file, container) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const audio = document.createElement('audio');
+        audio.src = e.target.result;
+        audio.className = 'media-preview';
+        audio.controls = true;
+        audio.preload = 'metadata';
+        container.appendChild(audio);
+    };
+    reader.readAsDataURL(file);
+}
+
+// Utility function to format file size
+function formatFileSize(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+// Keyboard support for modal
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape' && currentModal) {
+        closeModal();
+    }
+});
+
+</script>
+</html>
