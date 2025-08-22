@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -45,4 +46,44 @@ Test Five: Input box validation -->
         li.innerHTML += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input type='button' value='Delete' onclick='this.parentNode.remove()'>";
     });
     </script>
+=======
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form id="add">
+        <input type="text" id="userInput" placeholder="Enter a task">
+        <input type="submit" value="Add Task & Submit">
+        <!-- <button id="removeTask">Remove Task</button> -->
+    </form>
+
+    <ul id="todolist">
+        
+    </ul>
+</body>
+<script>
+    // 1. how to add a task to the list
+    const userInput = document.getElementById('userInput');
+    console.log("UserInput1", userInput.value);
+    const task = document.getElementById('add');
+    task.addEventListener('submit', function(event) {
+        event.preventDefault();
+        console.log("UserInput2", userInput.value);
+        if (userInput.value.trim() === '') {
+            alert('Please enter a task');
+            return;
+        }
+        const todolist = document.getElementById('todolist');
+        const li = document.createElement('li');
+        li.textContent = userInput.value;
+        todolist.appendChild(li);
+
+        li.innerHTML += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input type='button' value='Delete' onclick='this.parentNode.remove()'>";
+    });
+    </script>
+>>>>>>> 9abfda308246e71c2e7fa4536dd9a51efaa49034
 </html>
